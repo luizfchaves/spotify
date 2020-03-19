@@ -1,0 +1,89 @@
+$imgSize: 15rem;
+$primaryColor: #1db954;
+#search-container {
+  display: flex;
+  flex-direction: row;
+  input {
+    flex-grow: 1;
+  }
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
+}
+
+#lists-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  .list-container {
+    p {
+      font-size: 1.2rem;
+      text-align: left;
+    }
+    .list {
+      display: flex;
+      flex-direction: row;
+      max-width: 90vw;
+      overflow-x: auto;
+      .item {
+        padding: 0.25rem 0.5rem;
+        .img-container {
+          position: relative;
+          padding: 2px;
+          img {
+            max-height: $imgSize;
+            width: auto;
+          }
+          .favorite-icon {
+            position: absolute;
+            bottom: 0.4rem;
+            right: 0.4rem;
+            background: none;
+            fill: red;
+            transition: all 200ms ease;
+            overflow: visible;
+            svg {
+              background: none;
+              overflow: visible;
+            }
+            :hover {
+              transform: scale(1.2);
+            }
+          }
+        }
+        .duration {
+          font-size: 0.9rem;
+        }
+        .name {
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+        .artists-list {
+          opacity: 0.8;
+          p {
+            font-size: 0.9rem;
+          }
+        }
+      }
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: $primaryColor;
+      }
+    }
+  }
+}

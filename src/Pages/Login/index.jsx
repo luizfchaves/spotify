@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import queryString from "query-string";
 
-import { handleExpiredToken, getAcessToken } from "./../../Helper/spotifyAPI";
+import { handleExpiredToken, handleNewToken } from "./../../Helper/spotifyAPI";
 
 require("dotenv").config();
 
@@ -35,7 +35,7 @@ export default function Login() {
       return;
     }
     try {
-      await getAcessToken(url.code);
+      await handleNewToken(url.code);
       setLoading(false);
     } catch (error) {
       setError(true);
