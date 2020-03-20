@@ -9,8 +9,31 @@ $colors: (
 * {
   background-color: map-get($colors, background);
   color: map-get($colors, text);
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat", sans-serif !important;
   margin: 0px;
+}
+body {
+  padding: 0px !important;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: map-get($colors, background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #f1f1f1;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: map-get($colors, primary);
 }
 
 .content {
@@ -37,7 +60,7 @@ input {
 .btn {
   text-decoration: none;
   margin: 0rem 0.3rem;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   &.btn-primary {
     background-color: map-get($colors, primary);
     color: map-get($colors, text);
@@ -48,6 +71,9 @@ input {
       transform: scale(1.05);
       filter: brightness(1.2);
     }
+  }
+  @media (max-width: 768px) {
+    margin: 0.3rem 0rem;
   }
 }
 
@@ -62,4 +88,9 @@ input {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.modal-content {
+  border: none !important;
+  background-color: map-get($colors, background) !important;
 }

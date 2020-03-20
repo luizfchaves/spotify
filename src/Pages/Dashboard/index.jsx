@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   handleSearch,
   handleExpiredToken,
-  handleAlbumInformation
+  handleAlbumInfo,
+  handleArtistInfo
 } from "./../../Helper/spotifyAPI";
 import { Modal } from "reactstrap";
 import moment from "moment";
@@ -16,6 +17,7 @@ export default function Dashboard() {
   let [searchString, setSearchString] = useState("");
   let [favoritedSongs, setFavoritedSongs] = useState([]);
   let [albumSelected, setAlbumSelected] = useState(null);
+  let [artistSelected, setArtistSelected] = useState(null);
 
   useEffect(() => {
     getFavoritedSongs();
@@ -29,20 +31,19 @@ export default function Dashboard() {
       let token = JSON.parse(localStorage.getItem("token"));
       if (new Date(token.expireDate).getTime() < new Date().getTime()) {
         try {
-          await handleExpiredToken();
-          await setTimeout(async () => {
-            token = await JSON.parse(localStorage.getItem("token"));
-          }, 500);
+          token.access_token = await handleExpiredToken();
         } catch (error) {
           setError("token");
           console.log("error token");
           return false;
         }
       }
+      console.log("token handled");
       return token.access_token;
     } catch (error) {
-      console.log("error token2");
-      setError("token");
+      console.log("error token");
+      localStorage.removeItem("token");
+      window.location.href = "/login";
       return false;
     }
   }
@@ -54,13 +55,18 @@ export default function Dashboard() {
     console.log("procurando");
     try {
       let acessToken = await handleToken();
-      if (!acessToken) return;
+
       let response = await handleSearch(searchString, acessToken);
       console.log("resposta", response);
       let data = {};
       data.artists = response.artists.items;
       data.tracks = response.tracks.items;
       data.albums = response.albums.items;
+      data.next = {
+        artists: response.artists.next,
+        tracks: response.tracks.next,
+        albums: response.tracks.albums
+      };
       setLists(data);
     } catch (error) {
       setError("Search");
@@ -69,7 +75,14 @@ export default function Dashboard() {
     setLoading(false);
   }
   function getFavoritedSongs() {
-    setFavoritedSongs(JSON.parse(localStorage.getItem("favoritedSongs")));
+    console.log("Favorited songs");
+    let _favoritedSongs = JSON.parse(localStorage.getItem("favoritedSongs"));
+    if (!_favoritedSongs) {
+      _favoritedSongs = [];
+
+      localStorage.setItem("favoritedSongs", JSON.stringify(_favoritedSongs));
+    }
+    setFavoritedSongs(_favoritedSongs);
   }
   function saveFavoritedSongs(_favoritedSongs) {
     setFavoritedSongs(_favoritedSongs);
@@ -91,20 +104,53 @@ export default function Dashboard() {
     }
     saveFavoritedSongs(_favoritedSongs);
   }
+
   async function handleAlbumClicked(album) {
     try {
+      setArtistSelected(null);
       setAlbumSelected({ loading: true });
       let acessToken = await handleToken();
       if (!acessToken) return;
-      let response = await handleAlbumInformation(album.href, acessToken);
+      let response = await handleAlbumInfo(album.href, acessToken);
       console.log("funcionou", response);
       response.loading = false;
       setAlbumSelected(response);
     } catch (error) {
-      console.log("!funcionou", error);
+      setAlbumSelected(null);
     }
-    //setAlbumSelected(album);
   }
+  async function handleArtistClicked(artistID) {
+    try {
+      setAlbumSelected(null);
+      setArtistSelected({ loading: true });
+      let acessToken = await handleToken();
+      if (!acessToken) return;
+      let response = await handleArtistInfo(artistID, acessToken);
+      console.log("funcionou", response);
+      response.loading = false;
+      setArtistSelected(response);
+    } catch (error) {
+      setArtistSelected(null);
+    }
+  }
+  /*
+  async function handleGetMoreClicked(place, query) {
+    console.log("handling get more", query, place);
+    try {
+      let acessToken = await handleToken();
+      if (!acessToken) return;
+      let response = await handleGetMore(query, acessToken);
+      if (place.includes("album")) {
+      }
+      let _lists = lists;
+      _lists[place] = _lists[place].concat(response[place].items);
+      _lists.next[place] = response[place].next;
+      setLists(_lists);
+    } catch (error) {
+      console.log("error getting more", error);
+      alert("Ocorreu algum erro");
+    }
+  }*/
 
   return (
     <>
@@ -113,7 +159,7 @@ export default function Dashboard() {
           albumSelected.loading ? (
             <p className="message">Loading</p>
           ) : (
-            <div className="album">
+            <div className="modal-content" id="album">
               <div className="img-container">
                 <img
                   src={
@@ -122,7 +168,20 @@ export default function Dashboard() {
                   alt="Album cover"
                 />
               </div>
-              <p className="album-title">{albumSelected.name}</p>
+              <p className="title">{albumSelected.name}</p>
+              <div className="artists-list">
+                {albumSelected.artists.map(artist => (
+                  <p
+                    onClick={() => {
+                      handleArtistClicked(artist.id);
+                    }}
+                    className="artist-name"
+                    key={artist.id}
+                  >
+                    {artist.name}
+                  </p>
+                ))}
+              </div>
               <div className="music-list">
                 <div className="list-header">
                   <div className="music">
@@ -163,11 +222,73 @@ export default function Dashboard() {
                   setAlbumSelected(null);
                 }}
               >
-                Fechar
+                Close
               </button>
             </div>
           )
         ) : null}
+      </Modal>
+
+      <Modal isOpen={artistSelected != null} id="artist-modal">
+        {artistSelected ? (
+          artistSelected.loading ? (
+            <p className="message">Loading</p>
+          ) : (
+            <div className="modal-content" id="artist">
+              <div className="img-container">
+                {artistSelected.artist.images[0] ? (
+                  <img
+                    src={artistSelected.artist.images[0].url}
+                    alt="Album cover"
+                  />
+                ) : null}
+              </div>
+
+              <p className="title">{artistSelected.artist.name}</p>
+
+              <div className="list-container">
+                <p> Albums</p>
+                <div className="list">
+                  {artistSelected.albums.items.map(album => (
+                    <div
+                      className="item clickable"
+                      key={album.id}
+                      onClick={() => {
+                        handleAlbumClicked(album);
+                      }}
+                    >
+                      <div className="img-container">
+                        {album.images[0] ? (
+                          <img src={album.images[0].url} alt="Artist token" />
+                        ) : null}
+                      </div>
+                      <p className="name">{album.name}</p>
+                      <div className="description">
+                        <p>
+                          Artitst(s):
+                          {album.artists.map((artist, index) => {
+                            return `${artist.name}${
+                              album.artists.length === index + 1 ? "" : ", "
+                            }`;
+                          })}
+                        </p>
+                      </div>
+                      <button className="btn btn-primary">See more</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        ) : null}
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setArtistSelected(null);
+          }}
+        >
+          Close
+        </button>
       </Modal>
       <div className="content center">
         <div id="search-container">
@@ -199,14 +320,22 @@ export default function Dashboard() {
             <>
               <div id="lists-container">
                 <div className="list-container">
-                  <p>Tracks</p>
+                  <p
+                    onClick={() => {
+                      console.log(lists);
+                    }}
+                  >
+                    Tracks
+                  </p>
                   <div className="list">
-                    {lists.tracks.map(r => (
-                      <div className="item" key={r.id}>
+                    {lists.tracks.map(track => (
+                      <div className="item" key={track.id}>
                         <div className="img-container">
                           <img
                             src={
-                              r.album.images[0] ? r.album.images[0].url : null
+                              track.album.images[0]
+                                ? track.album.images[0].url
+                                : null
                             }
                             alt="Album of track"
                           />
@@ -217,10 +346,10 @@ export default function Dashboard() {
                               height="24"
                               viewBox="0 0 24 24"
                               onClick={() => {
-                                handleFavoriteSong(r.id);
+                                handleFavoriteSong(track.id);
                               }}
                             >
-                              {checkIfSongIsFavorited(r.id) ? (
+                              {checkIfSongIsFavorited(track.id) ? (
                                 <path d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z" />
                               ) : (
                                 <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402m5.726-20.583c-2.203 0-4.446 1.042-5.726 3.238-1.285-2.206-3.522-3.248-5.719-3.248-3.183 0-6.281 2.187-6.281 6.191 0 4.661 5.571 9.429 12 15.809 6.43-6.38 12-11.148 12-15.809 0-4.011-3.095-6.181-6.274-6.181" />
@@ -229,40 +358,38 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <p className="duration">
-                          Duração:{`${moment(r.duration_ms).format("mm:ss")}`}
+                          Duração:
+                          {`${moment(track.duration_ms).format("mm:ss")}`}
                         </p>
-                        <p className="name">{r.name}</p>
-                        <div className="description">
-                          <p>
-                            Artitst(s):
-                            {r.artists.map((artist, index) => {
-                              return `${artist.name}${
-                                r.artists.length === index + 1 ? "" : ", "
-                              }`;
+                        <p className="name">{track.name}</p>
+                        <div className="description album-description">
+                          <div className="artists-list">
+                            <p>Artist(s):</p>
+                            {track.artists.map((artist, index) => {
+                              return (
+                                <p
+                                  onClick={() => {
+                                    handleArtistClicked(artist.id);
+                                  }}
+                                  className="artist-name"
+                                  key={artist.id}
+                                >
+                                  {artist.name}
+                                </p>
+                              );
                             })}
-                          </p>
+                          </div>
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-                <div className="list-container">
-                  <p>Artists</p>
-                  <div className="list">
-                    {lists.artists.map(r => (
-                      <div className="item" key={r.id}>
-                        <div className="img-container">
-                          <img
-                            src={r.images[0] ? r.images[0].url : null}
-                            alt="Artist token"
-                          />
-                        </div>
-                        <p className="name">{r.name}</p>
-                        <div className="description">
-                          <p>Popularity: {r.popularity}</p>
-                        </div>
-                      </div>
-                    ))}
+                    {/*<div
+                      className="item get-more"
+                      onClick={() => {
+                        handleGetMoreClicked("tracks", lists.next.tracks);
+                      }}
+                    >
+                      <p>Get more</p>
+                    </div>*/}
                   </div>
                 </div>
                 <div className="list-container">
@@ -277,10 +404,9 @@ export default function Dashboard() {
                         }}
                       >
                         <div className="img-container">
-                          <img
-                            src={r.images[0] ? r.images[0].url : null}
-                            alt="Artist token"
-                          />
+                          {r.images[0] ? (
+                            <img src={r.images[0].url} alt="Artist token" />
+                          ) : null}
                         </div>
                         <p className="name">{r.name}</p>
                         <div className="description">
@@ -293,6 +419,33 @@ export default function Dashboard() {
                             })}
                           </p>
                         </div>
+                        <button className="btn btn-primary">See more</button>
+                      </div>
+                    ))}
+                    <div></div>
+                  </div>
+                </div>
+                <div className="list-container">
+                  <p>Artists</p>
+                  <div className="list">
+                    {lists.artists.map(r => (
+                      <div
+                        className="item clickable"
+                        key={r.id}
+                        onClick={() => {
+                          handleArtistClicked(r.id);
+                        }}
+                      >
+                        <div className="img-container">
+                          {r.images[0] ? (
+                            <img src={r.images[0].url} alt="Artist token" />
+                          ) : null}
+                        </div>
+                        <p className="name">{r.name}</p>
+                        <div className="description">
+                          <p>Popularity: {r.popularity}</p>
+                        </div>
+                        <button className="btn btn-primary">See more</button>
                       </div>
                     ))}
                   </div>

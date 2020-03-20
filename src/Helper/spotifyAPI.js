@@ -10,6 +10,7 @@ const headers = {
 };
 
 export async function handleExpiredToken() {
+  let accessToken = "";
   try {
     let token = JSON.parse(localStorage.getItem("token"));
     const data = {
@@ -27,7 +28,7 @@ export async function handleExpiredToken() {
         data.expireDate = newExpireDate;
         Object.assign(token, data);
         localStorage.setItem("token", JSON.stringify(token));
-        return;
+        accessToken = token.access_token;
       })
       .catch(error => {
         console.error("Error refreshing a token", error.response);
@@ -36,6 +37,7 @@ export async function handleExpiredToken() {
   } catch (error) {
     throw new Error("Error  on function of refreshing token");
   }
+  return accessToken;
 }
 
 export async function handleNewToken(code) {
@@ -97,7 +99,7 @@ export async function handleSearch(query, token) {
   return response;
 }
 
-export async function handleAlbumInformation(query, token) {
+export async function handleAlbumInfo(query, token) {
   let response = {};
   try {
     let axiosError = false;
@@ -117,6 +119,66 @@ export async function handleAlbumInformation(query, token) {
       throw new Error("Error handling album informations", axiosError);
   } catch (error) {
     throw new Error("Error handling album informations", error);
+  }
+  return response;
+}
+
+export async function handleArtistInfo(artistId, token) {
+  let response = {};
+  try {
+    let axiosError = false;
+    let artistInfo = axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    let artistAlbums = axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}/albums?market=BR&limit=3`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    await axios
+      .all([artistInfo, artistAlbums])
+      .then(r => {
+        console.log("About artists", r);
+        response.artist = r[0].data;
+        response.albums = r[1].data;
+      })
+      .catch(error => {
+        console.log("!funcionou axios", error);
+        axiosError = error;
+      });
+
+    if (axiosError)
+      throw new Error("Error handling album informations", axiosError);
+  } catch (error) {
+    throw new Error("Error handling album informations", error);
+  }
+  return response;
+}
+export async function handleGetMore(query, token) {
+  console.log("handlig get more", query, token);
+  let response = {};
+  try {
+    let axiosError = false;
+    await axios
+      .get(query, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(r => {
+        response = r.data;
+      })
+      .catch(error => {
+        console.log("error axios", error);
+        axiosError = error;
+      });
+
+    if (axiosError) throw new Error("Error getting more ", axiosError);
+  } catch (error) {
+    throw new Error("Error handling a", error);
   }
   return response;
 }
