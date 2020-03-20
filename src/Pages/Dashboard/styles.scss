@@ -129,6 +129,15 @@ $imgSize: 15rem;
     }
   }
 }
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  p {
+    padding-right: 1rem;
+  }
+}
+
 .modal-dialog {
   .modal-content {
     display: flex;

@@ -16,8 +16,8 @@ export async function handleExpiredToken() {
     const data = {
       grant_type: "refresh_token",
       refresh_token: token.refresh_token,
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      client_secret: process.env.REACT_APP_CLIENT_SECRET
+      client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+      client_secret: process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
     };
     axios
       .post(accountAPI, qs.stringify(data), headers)
@@ -47,8 +47,8 @@ export async function handleNewToken(code) {
       grant_type: "authorization_code",
       code,
       redirect_uri: `${process.env.REACT_APP_SITE_URL}/login`,
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      client_secret: process.env.REACT_APP_CLIENT_SECRET
+      client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+      client_secret: process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
     };
     axios
       .post(accountAPI, qs.stringify(data), {
@@ -111,7 +111,6 @@ export async function handleAlbumInfo(query, token) {
         response = r.data;
       })
       .catch(error => {
-        console.log("!funcionou axios", error);
         axiosError = error;
       });
 
@@ -143,12 +142,10 @@ export async function handleArtistInfo(artistId, token) {
     await axios
       .all([artistInfo, artistAlbums])
       .then(r => {
-        console.log("About artists", r);
         response.artist = r[0].data;
         response.albums = r[1].data;
       })
       .catch(error => {
-        console.log("!funcionou axios", error);
         axiosError = error;
       });
 
@@ -160,7 +157,6 @@ export async function handleArtistInfo(artistId, token) {
   return response;
 }
 export async function handleGetMore(query, token) {
-  console.log("handlig get more", query, token);
   let response = {};
   try {
     let axiosError = false;
@@ -172,7 +168,6 @@ export async function handleGetMore(query, token) {
         response = r.data;
       })
       .catch(error => {
-        console.log("error axios", error);
         axiosError = error;
       });
 

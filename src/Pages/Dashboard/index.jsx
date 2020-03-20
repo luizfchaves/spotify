@@ -5,7 +5,7 @@ import {
   handleAlbumInfo,
   handleArtistInfo
 } from "./../../Helper/spotifyAPI";
-import { Modal } from "reactstrap";
+import { Modal, Spinner } from "reactstrap";
 import moment from "moment";
 import "./styles.scss";
 
@@ -34,14 +34,11 @@ export default function Dashboard() {
           token.access_token = await handleExpiredToken();
         } catch (error) {
           setError("token");
-          console.log("error token");
           return false;
         }
       }
-      console.log("token handled");
       return token.access_token;
     } catch (error) {
-      console.log("error token");
       localStorage.removeItem("token");
       window.location.href = "/login";
       return false;
@@ -52,12 +49,10 @@ export default function Dashboard() {
     setError(false);
     setSeached(true);
     setLoading(true);
-    console.log("procurando");
     try {
       let acessToken = await handleToken();
 
       let response = await handleSearch(searchString, acessToken);
-      console.log("resposta", response);
       let data = {};
       data.artists = response.artists.items;
       data.tracks = response.tracks.items;
@@ -71,11 +66,9 @@ export default function Dashboard() {
     } catch (error) {
       setError("Search");
     }
-    console.log("submited");
     setLoading(false);
   }
   function getFavoritedSongs() {
-    console.log("Favorited songs");
     let _favoritedSongs = JSON.parse(localStorage.getItem("favoritedSongs"));
     if (!_favoritedSongs) {
       _favoritedSongs = [];
@@ -98,7 +91,6 @@ export default function Dashboard() {
     let _favoritedSongs = favoritedSongs;
     if (favoritedSongs.includes(id)) {
       _favoritedSongs = favoritedSongs.filter(r => r !== id);
-      console.log("removed song", _favoritedSongs, id);
     } else {
       _favoritedSongs.push(id);
     }
@@ -112,7 +104,6 @@ export default function Dashboard() {
       let acessToken = await handleToken();
       if (!acessToken) return;
       let response = await handleAlbumInfo(album.href, acessToken);
-      console.log("funcionou", response);
       response.loading = false;
       setAlbumSelected(response);
     } catch (error) {
@@ -126,7 +117,6 @@ export default function Dashboard() {
       let acessToken = await handleToken();
       if (!acessToken) return;
       let response = await handleArtistInfo(artistID, acessToken);
-      console.log("funcionou", response);
       response.loading = false;
       setArtistSelected(response);
     } catch (error) {
@@ -157,7 +147,10 @@ export default function Dashboard() {
       <Modal isOpen={albumSelected != null} id="album-modal">
         {albumSelected ? (
           albumSelected.loading ? (
-            <p className="message">Loading</p>
+            <div className="loading-container">
+              <p className="message">Loading</p>
+              <Spinner className="spinner" />
+            </div>
           ) : (
             <div className="modal-content" id="album">
               <div className="img-container">
@@ -232,7 +225,10 @@ export default function Dashboard() {
       <Modal isOpen={artistSelected != null} id="artist-modal">
         {artistSelected ? (
           artistSelected.loading ? (
-            <p className="message">Loading</p>
+            <div className="loading-container">
+              <p className="message">Loading</p>
+              <Spinner className="spinner" />
+            </div>
           ) : (
             <div className="modal-content" id="artist">
               <div className="img-container">
@@ -303,30 +299,24 @@ export default function Dashboard() {
               setSeached(false);
               setLists({ tracks: [], artists: [], albums: [] });
             }}
-            onDoubleClick={() => {
-              console.log("list track", lists.tracks);
-            }}
           />
           <button className="btn btn-primary" onClick={handleSubmit}>
             Search
           </button>
         </div>
         {error !== false ? (
-          <p className="message">Ocorreu algum erro</p>
+          <p className="message">Some error has occurred</p>
         ) : seached ? (
           loading ? (
-            <p className="message">Carregando</p>
+            <div className="loading-container">
+              <p className="message">Loading</p>
+              <Spinner className="spinner" />
+            </div>
           ) : (
             <>
               <div id="lists-container">
                 <div className="list-container">
-                  <p
-                    onClick={() => {
-                      console.log(lists);
-                    }}
-                  >
-                    Tracks
-                  </p>
+                  <p>Tracks</p>
                   <div className="list">
                     {lists.tracks.map(track => (
                       <div className="item" key={track.id}>

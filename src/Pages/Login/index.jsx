@@ -31,7 +31,7 @@ export default function Login() {
   async function handleNewLogin() {
     const url = queryString.parse(window.location.search);
     if (!url.code) {
-      window.location.href = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_SITE_URL}/login`;
+      window.location.href = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_SITE_URL}/login`;
       return;
     }
     try {
@@ -57,7 +57,7 @@ export default function Login() {
   return (
     <div className="content center">
       {loading ? (
-        <h2>Carregando</h2>
+        <h2>Loading</h2>
       ) : error ? (
         <>
           <p>Houve um erro</p>
