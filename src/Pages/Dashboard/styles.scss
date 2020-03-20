@@ -1,6 +1,26 @@
 $imgSize: 15rem;
 $primaryColor: #1db954;
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #888;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #f1f1f1;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $primaryColor;
+}
 #search-container {
+  margin-top: 2rem;
   display: flex;
   flex-direction: row;
   input {
@@ -11,14 +31,37 @@ $primaryColor: #1db954;
     flex-direction: column;
   }
 }
+.message {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+}
+
+.favorite-icon {
+  background: none;
+  fill: red;
+  transition: all 200ms ease;
+  overflow: visible;
+  svg {
+    background: none;
+    overflow: visible;
+    :hover {
+      transform: scale(1);
+    }
+  }
+  :hover {
+    transform: scale(1.2);
+  }
+}
 
 #lists-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   .list-container {
+    margin: 2rem 0rem 1rem;
     p {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
       text-align: left;
     }
     .list {
@@ -27,29 +70,23 @@ $primaryColor: #1db954;
       max-width: 90vw;
       overflow-x: auto;
       .item {
-        padding: 0.25rem 0.5rem;
+        &.clickable {
+          cursor: pointer;
+        }
+        margin: 0.5rem 0.5rem 1rem;
         .img-container {
           position: relative;
           padding: 2px;
+          height: $imgSize;
+          width: $imgSize;
           img {
-            max-height: $imgSize;
+            height: 100%;
             width: auto;
           }
           .favorite-icon {
             position: absolute;
             bottom: 0.4rem;
             right: 0.4rem;
-            background: none;
-            fill: red;
-            transition: all 200ms ease;
-            overflow: visible;
-            svg {
-              background: none;
-              overflow: visible;
-            }
-            :hover {
-              transform: scale(1.2);
-            }
           }
         }
         .duration {
@@ -59,30 +96,69 @@ $primaryColor: #1db954;
           font-weight: bold;
           font-size: 1.2rem;
         }
-        .artists-list {
+        .description {
           opacity: 0.8;
           p {
             font-size: 0.9rem;
           }
         }
       }
-      &::-webkit-scrollbar {
-        width: 10px;
+    }
+  }
+}
+.modal-content {
+  border: none !important;
+}
+#album-modal {
+  .album {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .album-title {
+      font-size: 1.5rem;
+      font-weight: bolder;
+    }
+    .img-container {
+      width: $imgSize;
+      height: $imgSize;
+      img {
+        height: 100%;
+        width: 100%;
       }
-
-      /* Track */
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
+    }
+    .music-list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      .list-header {
+        p {
+          margin: 0;
+        }
+        border-bottom: 1px solid #888;
       }
-
-      /* Handle */
-      &::-webkit-scrollbar-thumb {
-        background: #888;
+      .list-body {
+        max-height: 30rem;
+        overflow: auto;
+        :first-child {
+          margin-top: 0.3rem;
+        }
       }
-
-      /* Handle on hover */
-      &::-webkit-scrollbar-thumb:hover {
-        background: $primaryColor;
+      .music {
+        display: flex;
+        align-content: center;
+        .index {
+          width: 8%;
+          text-align: right;
+        }
+        .favorite-icon {
+          display: flex;
+          justify-content: center;
+          padding: 0rem 0.5rem;
+          width: 12%;
+        }
+        .music-name {
+          max-width: 80%;
+        }
       }
     }
   }

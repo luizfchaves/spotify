@@ -85,16 +85,38 @@ export async function handleSearch(query, token) {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(r => {
-        console.log("funcionou", r.data);
         response = r.data;
       })
       .catch(error => {
-        console.log("!funcionou", error.response);
         axiosError = error;
       });
     if (axiosError) throw new Error("Error handling search", axiosError);
   } catch (error) {
     throw new Error("Error handling search", error);
+  }
+  return response;
+}
+
+export async function handleAlbumInformation(query, token) {
+  let response = {};
+  try {
+    let axiosError = false;
+    await axios
+      .get(query, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(r => {
+        response = r.data;
+      })
+      .catch(error => {
+        console.log("!funcionou axios", error);
+        axiosError = error;
+      });
+
+    if (axiosError)
+      throw new Error("Error handling album informations", axiosError);
+  } catch (error) {
+    throw new Error("Error handling album informations", error);
   }
   return response;
 }
