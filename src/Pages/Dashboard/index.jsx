@@ -123,6 +123,12 @@ export default function Dashboard() {
       setArtistSelected(null);
     }
   }
+
+  function handleExit() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
   /*
   async function handleGetMoreClicked(place, query) {
     console.log("handling get more", query, place);
@@ -305,7 +311,13 @@ export default function Dashboard() {
           </button>
         </div>
         {error !== false ? (
-          <p className="message">Some error has occurred</p>
+          <>
+            <p className="message">Some error has occurred.</p>
+            <button className="btn btn-primary" onClick={handleExit}>
+              {" "}
+              Try to enter again
+            </button>
+          </>
         ) : seached ? (
           loading ? (
             <div className="loading-container">
