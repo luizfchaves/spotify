@@ -172,13 +172,14 @@ $imgSize: 15rem;
     .list-body {
       max-height: 30rem;
       overflow: auto;
-      :first-child {
-        margin-top: 0.3rem;
-      }
     }
     .music {
       display: flex;
       align-content: center;
+      margin: 0.5rem 0rem;
+      p {
+        margin: 0px;
+      }
       .index {
         width: 8%;
         text-align: right;
@@ -191,6 +192,9 @@ $imgSize: 15rem;
       }
       .music-name {
         max-width: 80%;
+      }
+      audio {
+        margin-left: auto;
       }
     }
   }
