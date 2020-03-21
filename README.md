@@ -19,5 +19,14 @@ Um aplicativo web baseado na API público do spotify'.
 | Respeitar algum guideline (ios, material...) | X        |
 | Hospedar em algum lugar como um demo         | V        |
 
+## Exemplo de .env
+REACT_APP_SPOTIFY_CLIENT_ID=
+REACT_APP_SPOTIFY_CLIENT_SECRET=
+REACT_APP_SITE_URL=
+PUBLIC_URL=
+
+REACT_APP_SITE_URL e PUBLIC_URL são iguais.
+
+
 [Clique aque para entrar no site](https://spotify.luizchaves.dev)  
 Ou copie a URL : https://spotify.luizchaves.dev
