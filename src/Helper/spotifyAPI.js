@@ -133,7 +133,7 @@ export async function handleArtistInfo(artistId, token) {
       }
     );
     let artistAlbums = axios.get(
-      `https://api.spotify.com/v1/artists/${artistId}/albums?market=BR&limit=3`,
+      `https://api.spotify.com/v1/artists/${artistId}/albums?market=BR`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
