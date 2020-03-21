@@ -312,10 +312,12 @@ export default function Dashboard() {
         </div>
         {error !== false ? (
           <>
-            <p className="message">Some error has occurred.</p>
+            <p className="message">
+              Some error has occurred.
+              <br /> Check your internet connection and try to search again.
+            </p>
             <button className="btn btn-primary" onClick={handleExit}>
-              {" "}
-              Try to enter again
+              If the problem persists, try to login again
             </button>
           </>
         ) : seached ? (
@@ -328,7 +330,7 @@ export default function Dashboard() {
             <>
               <div id="lists-container">
                 <div className="list-container">
-                  <p>Tracks</p>
+                  <p>Musics</p>
                   <div className="list">
                     {lists.tracks.map(track => (
                       <div className="item" key={track.id}>
@@ -360,7 +362,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <p className="duration">
-                          Duração:
+                          Duration:
                           {`${moment(track.duration_ms).format("mm:ss")}`}
                         </p>
                         <p className="name">{track.name}</p>
