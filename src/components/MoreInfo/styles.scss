@@ -1,0 +1,112 @@
+#MoreInfo {
+  height: 90vh;
+  min-height: 90vh;
+  overflow: hidden;
+  transition: 250ms ease-in;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .loading-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+    font-size: 1.5rem;
+    p {
+      margin: 0rem 1rem;
+    }
+  }
+  &.hidden {
+    height: 0px;
+    min-height: 0px;
+  }
+  .more-info-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+    .img-container {
+      height: 20vh;
+      width: 20vh;
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+    .title {
+      font-size: 2rem;
+      text-align: center;
+    }
+  }
+  .more-info-body {
+    height: 50%;
+    overflow: auto;
+    .more-album-track-list {
+      display: flex;
+      flex-direction: column;
+
+      .track {
+        display: flex;
+        flex-direction: row;
+        color: var(--white);
+
+        .index {
+          width: 10%;
+          min-width: 10%;
+          p {
+            text-align: right;
+          }
+        }
+        .favorite-icon {
+          display: flex;
+          width: 10%;
+          min-width: 10%;
+          justify-content: center;
+          fill: var(--red);
+        }
+        .track-name {
+          padding: 0rem 1rem 0rem 0rem;
+          width: 80%;
+        }
+        &.ACTIVE {
+          font-weight: bolder;
+          font-size: 1.2rem;
+          margin: 0.5rem 0rem;
+        }
+      }
+    }
+    .albums-artists-list {
+      .album-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        .album {
+          max-width: var(--img-size);
+          margin: 1rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .img-container {
+            height: var(--img-size);
+            width: var(--img-size);
+            img {
+              height: 100%;
+              width: 100%;
+            }
+          }
+          .title {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .more-info-footer {
+    padding: 1rem 0rem;
+    display: flex;
+    flex-direction: column;
+    height: 10%;
+  }
+}

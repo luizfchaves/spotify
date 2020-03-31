@@ -1,0 +1,31 @@
+$body-bg: #181818;
+$dark: #181818;
+$font-family-sans-serif: "Montserrat", sans-serif;
+$primary: #1db954;
+$primary-hover: #189845;
+$img-size: 15rem;
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import url("https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap");
+
+:root {
+  --img-size: #{$img-size};
+  --primary-hover: #{$primary-hover};
+}
+* {
+  color: $light;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--gray-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--white);
+}

@@ -1,0 +1,29 @@
+#lists {
+  height: 90vh;
+  overflow: auto;
+  transition: 200ms;
+  .list-container {
+    margin: 1rem;
+    .title {
+      margin: 2rem 0rem 0rem;
+    }
+  }
+  :first-child {
+    .title {
+      margin-top: 0px;
+    }
+  }
+  .error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    p {
+      text-align: center;
+    }
+  }
+}
+
+.hidden {
+  height: 0px !important;
+}

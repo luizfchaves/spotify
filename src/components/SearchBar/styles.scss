@@ -1,0 +1,13 @@
+#search-bar {
+  height: 10vh;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  div {
+    display: flex;
+    input {
+      margin-right: 0.5rem;
+    }
+  }
+}
