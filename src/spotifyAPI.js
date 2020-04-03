@@ -120,7 +120,6 @@ const handleNewToken = function(code) {
 
 const search = function(query) {
   return new Promise(async function(resolve, reject) {
-    reject("isso msm que vc leu");
     try {
       if (query === "") {
         reject(
