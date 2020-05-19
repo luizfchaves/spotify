@@ -16,7 +16,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
   function closeMoreInfo() {
     dispatch({
       type: "SET_MOREINFO",
-      open: false
+      open: false,
     });
   }
   function toggleFavoritedSong(songID) {
@@ -33,17 +33,17 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
     }
 
     await handleMoreInfo(moreInfo.itemId, itemType)
-      .then(r => {
+      .then((r) => {
         dispatch({
           type: "SET_MOREINFO",
           open: true,
           loading: false,
           response: r,
           itemId: moreInfo.itemId,
-          typeGet: moreInfo.type
+          typeGet: moreInfo.type,
         });
       })
-      .catch(r => {});
+      .catch((r) => {});
   }
 
   function getMoreAgain(itemId, typeGet) {
@@ -52,7 +52,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
       open: true,
       itemId: itemId,
       loading: true,
-      typeGet
+      typeGet,
     });
   }
 
@@ -84,7 +84,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
             </div>
             {moreInfo.type === "artist" ? null : (
               <div className="artists">
-                {moreInfo.response[0].artists.map(artist => (
+                {moreInfo.response[0].artists.map((artist) => (
                   <p
                     key={artist.id}
                     className="link"
@@ -104,7 +104,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
               <div className="albums-artists-list">
                 <p className="tile">Albums</p>
                 <div className="album-list">
-                  {moreInfo.response[1].items.map(album => (
+                  {moreInfo.response[1].items.map((album) => (
                     <div key={album.id} className="album">
                       <div className="img-container">
                         <img
@@ -127,7 +127,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
               </div>
             ) : (
               <div className="more-album-track-list">
-                {moreInfo.response[0].tracks.items.map(track => {
+                {moreInfo.response[0].tracks.items.map((track) => {
                   return (
                     <div
                       className={
@@ -179,7 +179,7 @@ const MoreInfo = ({ moreInfo, favoritedSongs, dispatch }) => {
   );
 };
 
-export default connect(state => ({
+export default connect((state) => ({
   moreInfo: state.moreInfo,
-  favoritedSongs: state.favoritedSongs
+  favoritedSongs: state.favoritedSongs,
 }))(MoreInfo);

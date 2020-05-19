@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import "./styles.scss";
 
 export default function Homescreen() {
-  let [alertModal, setAlertModal] = useState(true);
   return (
     <>
       <div id="homescreen">
