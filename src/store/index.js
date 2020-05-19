@@ -3,17 +3,18 @@ import { createStore } from "redux";
 const INITIAL_STATE = {
   searched: "",
   completed: false,
+  searchError: false,
   tracks: {
     items: [],
-    next: ""
+    next: "",
   },
   artists: {
     items: [],
-    next: ""
+    next: "",
   },
   albums: {
     items: [],
-    next: ""
+    next: "",
   },
   favoritedSongs: JSON.parse(localStorage.getItem("favoritedSongs")) || [],
   moreInfo: {
@@ -21,8 +22,8 @@ const INITIAL_STATE = {
     itemId: "",
     type: "",
     loading: true,
-    response: {}
-  }
+    response: {},
+  },
 };
 
 function reducer(state = INITIAL_STATE, action) {
@@ -50,6 +51,8 @@ function reducer(state = INITIAL_STATE, action) {
 
     case "SET_COMPLETED":
       return { ...state, completed: action.completed };
+    case "SET_SEARCHERROR":
+      return { ...state, searchError: action.searchError };
 
     case "SET_SEARCHED":
       return { ...state, searched: action.searched };
@@ -57,7 +60,9 @@ function reducer(state = INITIAL_STATE, action) {
     case "TOGGLE_SONG_FAVORITED": {
       let favoritedSongs = state.favoritedSongs;
       if (favoritedSongs.includes(action.songID)) {
-        favoritedSongs = favoritedSongs.filter(song => song !== action.songID);
+        favoritedSongs = favoritedSongs.filter(
+          (song) => song !== action.songID
+        );
       } else {
         favoritedSongs = [...favoritedSongs, action.songID];
       }
@@ -73,7 +78,7 @@ function reducer(state = INITIAL_STATE, action) {
           type: action.typeGet,
           loading: action.loading,
           response: action.response,
-          open: true
+          open: true,
         };
       } else {
         moreInfo = { ...state.moreInfo, open: false };

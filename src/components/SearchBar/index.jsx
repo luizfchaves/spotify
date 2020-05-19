@@ -12,38 +12,44 @@ const SearchBar = ({ completed, searched, dispatch }) => {
     return {
       type: "SET_ARTISTS",
       items: artists,
-      next
+      next,
     };
   }
   function setTracks(tracks, next) {
     return {
       type: "SET_TRACKS",
       items: tracks,
-      next
+      next,
     };
   }
   function setAlbums(albums, next) {
     return {
       type: "SET_ALBUMS",
       items: albums,
-      next
+      next,
     };
   }
 
   function setSearch() {
     return {
       type: "SET_SEARCHED",
-      seached: searchInput
+      seached: searchInput,
     };
   }
 
   function setCompleted(completed) {
     return {
       type: "SET_COMPLETED",
-      completed
+      completed,
     };
   }
 
+  function setSearchError(searchError) {
+    return {
+      type: "SET_SEARCHERROR",
+      searchError,
+    };
+  }
   async function handleSearch() {
     dispatch(setCompleted(false));
 
@@ -55,12 +61,15 @@ const SearchBar = ({ completed, searched, dispatch }) => {
     if (searchInput !== searched) {
       dispatch(setSearch());
       await search(searchInput)
-        .then(r => {
+        .then((r) => {
           dispatch(setTracks(r.tracks.items, r.tracks.next));
           dispatch(setArtists(r.artists.items, r.artists.next));
           dispatch(setAlbums(r.albums.items, r.albums.next));
+          dispatch(setSearchError(false));
         })
-        .catch(error => {});
+        .catch((error) => {
+          dispatch(setSearchError(true));
+        });
     }
     dispatch(setCompleted(true));
   }
@@ -76,8 +85,8 @@ const SearchBar = ({ completed, searched, dispatch }) => {
         <Input
           placeholder="Search for a music, artists and album"
           value={searchInput}
-          onChange={e => handleChangeInput(e.target.value)}
-          onKeyPress={event => {
+          onChange={(e) => handleChangeInput(e.target.value)}
+          onKeyPress={(event) => {
             if (event.key === "Enter") {
               handleSearch();
             }
@@ -91,7 +100,7 @@ const SearchBar = ({ completed, searched, dispatch }) => {
   );
 };
 
-export default connect(state => ({
+export default connect((state) => ({
   completed: state.completed,
-  searched: state.searched
+  searched: state.searched,
 }))(SearchBar);

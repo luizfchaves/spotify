@@ -7,7 +7,13 @@ import List from "./../List";
 
 import "./styles.scss";
 
-const ItemsList = ({ lists, completed, favoritedSongs, dispatch }) => {
+const ItemsList = ({
+  lists,
+  completed,
+  searchError,
+  favoritedSongs,
+  dispatch,
+}) => {
   let [error, setError] = useState(false);
   function setMoreInfo(item, typeGet) {
     let itemId;
@@ -21,7 +27,7 @@ const ItemsList = ({ lists, completed, favoritedSongs, dispatch }) => {
       itemId,
       typeGet,
       open: true,
-      loading: true
+      loading: true,
     };
   }
   function toggleFavoritedSong(songID) {
@@ -34,14 +40,14 @@ const ItemsList = ({ lists, completed, favoritedSongs, dispatch }) => {
 
   async function getMore(query, type) {
     await handleGetMore(query)
-      .then(r => {
+      .then((r) => {
         dispatch({
           type: `ADD_${type.toUpperCase()}`,
           items: r[type].items,
-          next: r[type].next
+          next: r[type].next,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         setError(true);
       });
   }
@@ -53,7 +59,21 @@ const ItemsList = ({ lists, completed, favoritedSongs, dispatch }) => {
 
   return (
     <div id="lists" className={completed ? "" : "hidden"}>
-      {error ? (
+      {error | searchError ? (
+        <>
+          <div className="error">
+            <p>
+              Some error has occurred.
+              <br /> Check your internet connection and try again
+              <br /> If this error persists please try to logout and sign in
+              again
+            </p>
+            <Button color="primary" onClick={logout}>
+              Logout
+            </Button>
+          </div>
+        </>
+      ) : (
         <>
           <div className="list-container">
             <p className="title">Tracks</p>
@@ -92,31 +112,18 @@ const ItemsList = ({ lists, completed, favoritedSongs, dispatch }) => {
             </div>
           </div>
         </>
-      ) : (
-        <>
-          <div className="error">
-            <p>
-              Some error has occurred.
-              <br /> Check your internet connection and try again
-              <br /> If this error persists please try to logout and sign in
-              again
-            </p>
-            <Button color="primary" onClick={logout}>
-              Logout
-            </Button>
-          </div>
-        </>
       )}
     </div>
   );
 };
 
-export default connect(state => ({
+export default connect((state) => ({
   lists: {
     tracks: state.tracks,
     albums: state.albums,
-    artists: state.artists
+    artists: state.artists,
   },
+  searchError: state.searchError,
   completed: state.completed,
-  favoritedSongs: state.favoritedSongs
+  favoritedSongs: state.favoritedSongs,
 }))(ItemsList);
